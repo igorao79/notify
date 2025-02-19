@@ -3,6 +3,11 @@ let btnValid = document.querySelector('.btn-valid');
 let btnInvalid = document.querySelector('.btn-invalid');
 
 function showNotification(type, message) {
+    if (!canShowNotification()) {
+        console.log('Слишком много уведомлений, новые не появляются.');
+        return;
+    }
+
     let existingNotifies = document.querySelectorAll('.notify');
     let offset = existingNotifies.length * 60; 
 
@@ -34,5 +39,18 @@ function updateNotificationPositions() {
     });
 }
 
+function canShowNotification() {
+    let fullHeight = window.innerHeight; // Высота окна просмотра
+    let notifications = document.querySelectorAll('.notify');
+    let totalNotifyHeight = 0;
+
+    notifications.forEach(notify => {
+        totalNotifyHeight += notify.offsetHeight + 10; // 10px — возможный отступ
+    });
+
+    return totalNotifyHeight < fullHeight * 0.9; // Если уведомления не перекрывают 90% экрана
+}
+
+// Проверку теперь делаем внутри событий клика
 btnValid.addEventListener('click', () => showNotification('valid', 'Валидное уведомление'));
 btnInvalid.addEventListener('click', () => showNotification('invalid', 'Невалидное уведомление'));
